@@ -11,6 +11,9 @@ def get_scenario_config(scenario_name):
         'fig6': 'dual-interference_moving',
         'table': 'snr-sir-sweep_single-interference',
         'fig2-3-4-riemannian': 't60-sweep_clean_riemannian',
+        'beta-sweep_clean': 't60-sweep_clean',
+        'beta-sweep_clean_wideband-coherent': 't60-sweep_clean_wideband-coherent',
+        'beta-sweep_clean_wideband-incoherent': 't60-sweep_clean_wideband-incoherent',
     }
     
     # Map legacy names to new names
@@ -130,6 +133,66 @@ def get_scenario_config(scenario_name):
             'plot_t60_sweep_clean': True,
             'covariance_averaging_method': 'riemannian',
         }
+    elif scenario_name == 't60-sweep_clean_wideband-coherent':
+        return {
+            'k_interference_pos': 1,
+            'k_train_points': 100,
+            'k_art_points': 200,
+            'k_test_points': 300,
+            'beta_vec': [0.2, 0.3, 0.4, 0.5, 0.6],
+            'snr_max_db': -20,
+            'snr_min_db': -20,
+            'sir_max_db': -20,
+            'sir_min_db': -20,
+            'is_interference_active': False,
+            'is_interference_fixed': True,
+            'sig_dim_4_music_pt': 1,
+            'sig_dim_4_music': 1,
+            'train_is_test': True,
+            'is_only_interf_active_during_train': 0,
+            'is_two_interference_sources_active': False,
+            'k_inter_pos': 1,
+            'dist_between_train': 0.2,
+            'plot_t60_sweep_clean': True,
+            'is_wideband': True,
+            'wideband_params': {
+                'n_freq_bins': 10,
+                'f_max': 1429,
+                'f_min': 200,
+                'freq_selection': 'energy',
+                'combination_method': 'coherent',
+            },
+        }
+    elif scenario_name == 't60-sweep_clean_wideband-incoherent':
+        return {
+            'k_interference_pos': 1,
+            'k_train_points': 100,
+            'k_art_points': 200,
+            'k_test_points': 300,
+            'beta_vec': [0.2, 0.3, 0.4, 0.5, 0.6],
+            'snr_max_db': -20,
+            'snr_min_db': -20,
+            'sir_max_db': -20,
+            'sir_min_db': -20,
+            'is_interference_active': False,
+            'is_interference_fixed': True,
+            'sig_dim_4_music_pt': 1,
+            'sig_dim_4_music': 1,
+            'train_is_test': True,
+            'is_only_interf_active_during_train': 0,
+            'is_two_interference_sources_active': False,
+            'k_inter_pos': 1,
+            'dist_between_train': 0.2,
+            'plot_t60_sweep_clean': True,
+            'is_wideband': True,
+            'wideband_params': {
+                'n_freq_bins': 10,
+                'f_max': 1429,
+                'f_min': 200,
+                'freq_selection': 'energy',
+                'combination_method': 'incoherent',
+            },
+        }
     else:
         raise ValueError(f"Unknown scenario: {scenario_name}")
 
@@ -140,6 +203,7 @@ def main():
                                  't60-sweep_clean', 'single-interference_fixed', 
                                  'dual-interference_moving', 'snr-sir-sweep_single-interference',
                                  't60-sweep_clean_riemannian',
+                                 't60-sweep_clean_wideband-coherent', 't60-sweep_clean_wideband-incoherent',
                                  # Legacy names (deprecated)
                                  'fig2-3-4', 'fig5', 'fig6', 'table', 'fig2-3-4-riemannian'],
                         help='Scenario to run (use new t60-sweep naming)')

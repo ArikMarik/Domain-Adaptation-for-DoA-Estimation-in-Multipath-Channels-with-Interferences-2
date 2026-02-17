@@ -28,7 +28,7 @@ def plot_beta_sweep(beta_vec, errors_dict, method_name, snr_ind, sir_ind, output
     ax.set_box_aspect(None)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'T60Sweep_DoAError_{method_name}.jpg'), dpi=200, quality=95)
+    plt.savefig(os.path.join(output_dir, f'T60Sweep_DoAError_{method_name}.jpg'), dpi=200)
     plt.close()
 
 def plot_polar_spectrum(theta_vec, spectrum_adapted, spectrum_standard, theta_true, 
@@ -62,7 +62,7 @@ def plot_polar_spectrum(theta_vec, spectrum_adapted, spectrum_standard, theta_tr
     ax.tick_params(labelsize=16)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200, quality=95)
+    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200)
     plt.close()
 
 def plot_polar_spectrum_components(theta_vec, spectrum_e, spectrum_sigma_tr, spectrum_sigma_art,
@@ -88,7 +88,7 @@ def plot_polar_spectrum_components(theta_vec, spectrum_e, spectrum_sigma_tr, spe
     ax.tick_params(labelsize=16)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200, quality=95)
+    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200)
     plt.close()
 
 def plot_boxplots(data, labels, title, output_dir, filename, n_subplots=3):
@@ -132,7 +132,7 @@ def plot_boxplots(data, labels, title, output_dir, filename, n_subplots=3):
         ax.set_ylim([y_min, y_max])
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200, quality=95)
+    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200)
     plt.close()
 
 
@@ -206,7 +206,7 @@ def plot_arithmetic_vs_riemannian_comparison(results_arith_file, results_riem_fi
         ax.tick_params(labelsize=12)
         
         plt.tight_layout()
-        plt.savefig(os.path.join(output_dir, f'Comparison_ArithVsRiem_{method_name}.jpg'), dpi=200, quality=95)
+        plt.savefig(os.path.join(output_dir, f'Comparison_ArithVsRiem_{method_name}.jpg'), dpi=200)
         plt.close()
         
         print(f"Saved: Comparison_ArithVsRiem_{method_name}.jpg")
@@ -238,7 +238,7 @@ def plot_arithmetic_vs_riemannian_comparison(results_arith_file, results_riem_fi
     plt.suptitle('Domain Adaptation Methods: Arithmetic vs Riemannian Mean Comparison', 
                  fontsize=15, y=1.02)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'Comparison_ArithVsRiem_Summary.jpg'), dpi=200, quality=95)
+    plt.savefig(os.path.join(output_dir, 'Comparison_ArithVsRiem_Summary.jpg'), dpi=200)
     plt.close()
     
     print(f"Saved: Comparison_ArithVsRiem_Summary.jpg")
