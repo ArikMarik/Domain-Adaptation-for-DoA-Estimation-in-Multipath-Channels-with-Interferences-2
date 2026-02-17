@@ -91,13 +91,36 @@ def get_scenario_config(scenario_name):
             'k_inter_pos': 1,
             'dist_between_train': 0.2,
         }
+    elif scenario_name == 'fig2-3-4-riemannian':
+        return {
+            'k_interference_pos': 1,
+            'k_train_points': 100,
+            'k_art_points': 200,
+            'k_test_points': 300,
+            'beta_vec': [0.2, 0.3, 0.4, 0.5, 0.6],
+            'snr_max_db': -20,
+            'snr_min_db': -20,
+            'sir_max_db': -20,
+            'sir_min_db': -20,
+            'is_interference_active': False,
+            'is_interference_fixed': True,
+            'sig_dim_4_music_pt': 1,
+            'sig_dim_4_music': 1,
+            'train_is_test': True,
+            'is_only_interf_active_during_train': 0,
+            'is_two_interference_sources_active': False,
+            'k_inter_pos': 1,
+            'dist_between_train': 0.2,
+            'plot_figs_2_3_4': True,
+            'covariance_averaging_method': 'riemannian',
+        }
     else:
         raise ValueError(f"Unknown scenario: {scenario_name}")
 
 def main():
     parser = argparse.ArgumentParser(description='Run Acoustic DoA Estimation with Domain Adaptation')
     parser.add_argument('--scenario', type=str, default='all', 
-                        choices=['all', 'fig2-3-4', 'fig5', 'fig6', 'table'],
+                        choices=['all', 'fig2-3-4', 'fig5', 'fig6', 'table', 'fig2-3-4-riemannian'],
                         help='Scenario to run')
     args = parser.parse_args()
     

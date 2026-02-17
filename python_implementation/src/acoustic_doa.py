@@ -159,10 +159,13 @@ def run_acoustic_doa(config):
                         cor_art_mat_reg = cor_art_vec[:, :, source_ind] + epsilon * np.eye(n_mics)
                         cor_art_vec_inv[:, :, source_ind] = np.linalg.inv(cor_art_mat_reg)
                     
-                    corr_tr_mean = compute_mean_covariance(corr_tr_vec)
-                    cor_art_mean = compute_mean_covariance(cor_art_vec)
-                    corr_tr_mean_inv = compute_mean_covariance(corr_tr_vec_inv)
-                    cor_art_mean_inv = compute_mean_covariance(cor_art_vec_inv)
+                    # Get covariance averaging method from config (default: arithmetic)
+                    cov_method = config.get('covariance_averaging_method', 'arithmetic')
+                    
+                    corr_tr_mean = compute_mean_covariance(corr_tr_vec, method=cov_method)
+                    cor_art_mean = compute_mean_covariance(cor_art_vec, method=cov_method)
+                    corr_tr_mean_inv = compute_mean_covariance(corr_tr_vec_inv, method=cov_method)
+                    cor_art_mean_inv = compute_mean_covariance(cor_art_vec_inv, method=cov_method)
                     
                     E_pt = compute_adaptation_matrix(cor_art_mean, corr_tr_mean, epsilon)
                     E_pt_inv = compute_adaptation_matrix_inv(cor_art_mean_inv, corr_tr_mean_inv, epsilon)
