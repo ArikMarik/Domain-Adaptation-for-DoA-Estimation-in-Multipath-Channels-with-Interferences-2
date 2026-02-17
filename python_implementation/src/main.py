@@ -4,7 +4,22 @@ import time
 from acoustic_doa import run_acoustic_doa
 
 def get_scenario_config(scenario_name):
-    if scenario_name == 'fig2-3-4':
+    # Support legacy names for backward compatibility
+    legacy_map = {
+        'fig2-3-4': 't60-sweep_clean',
+        'fig5': 'single-interference_fixed',
+        'fig6': 'dual-interference_moving',
+        'table': 'snr-sir-sweep_single-interference',
+        'fig2-3-4-riemannian': 't60-sweep_clean_riemannian',
+    }
+    
+    # Map legacy names to new names
+    if scenario_name in legacy_map:
+        print(f"⚠️  Legacy scenario name '{scenario_name}' is deprecated.")
+        print(f"   Using new name: '{legacy_map[scenario_name]}'")
+        scenario_name = legacy_map[scenario_name]
+    
+    if scenario_name == 't60-sweep_clean':
         return {
             'k_interference_pos': 1,
             'k_train_points': 100,
@@ -24,9 +39,9 @@ def get_scenario_config(scenario_name):
             'is_two_interference_sources_active': False,
             'k_inter_pos': 1,
             'dist_between_train': 0.2,
-            'plot_figs_2_3_4': True,
+            'plot_t60_sweep_clean': True,
         }
-    elif scenario_name == 'fig5':
+    elif scenario_name == 'single-interference_fixed':
         return {
             'k_interference_pos': 20,
             'k_train_points': 100,
@@ -46,9 +61,10 @@ def get_scenario_config(scenario_name):
             'is_two_interference_sources_active': False,
             'k_inter_pos': 1,
             'dist_between_train': 0.2,
+            'plot_single_interference_fixed': True,
             'plot_figs_5': True,
         }
-    elif scenario_name == 'fig6':
+    elif scenario_name == 'dual-interference_moving':
         return {
             'k_interference_pos': 1,
             'k_train_points': 100,
@@ -68,9 +84,9 @@ def get_scenario_config(scenario_name):
             'is_two_interference_sources_active': True,
             'k_inter_pos': 1,
             'dist_between_train': 0.2,
-            'plot_figs_6': True,
+            'plot_dual_interference_moving': True,
         }
-    elif scenario_name == 'table':
+    elif scenario_name == 'snr-sir-sweep_single-interference':
         return {
             'k_interference_pos': 20,
             'k_train_points': 100,
@@ -91,7 +107,7 @@ def get_scenario_config(scenario_name):
             'k_inter_pos': 1,
             'dist_between_train': 0.2,
         }
-    elif scenario_name == 'fig2-3-4-riemannian':
+    elif scenario_name == 't60-sweep_clean_riemannian':
         return {
             'k_interference_pos': 1,
             'k_train_points': 100,
@@ -111,7 +127,7 @@ def get_scenario_config(scenario_name):
             'is_two_interference_sources_active': False,
             'k_inter_pos': 1,
             'dist_between_train': 0.2,
-            'plot_figs_2_3_4': True,
+            'plot_t60_sweep_clean': True,
             'covariance_averaging_method': 'riemannian',
         }
     else:
@@ -120,16 +136,21 @@ def get_scenario_config(scenario_name):
 def main():
     parser = argparse.ArgumentParser(description='Run Acoustic DoA Estimation with Domain Adaptation')
     parser.add_argument('--scenario', type=str, default='all', 
-                        choices=['all', 'fig2-3-4', 'fig5', 'fig6', 'table', 'fig2-3-4-riemannian'],
-                        help='Scenario to run')
+                        choices=['all', 
+                                 't60-sweep_clean', 'single-interference_fixed', 
+                                 'dual-interference_moving', 'snr-sir-sweep_single-interference',
+                                 't60-sweep_clean_riemannian',
+                                 # Legacy names (deprecated)
+                                 'fig2-3-4', 'fig5', 'fig6', 'table', 'fig2-3-4-riemannian'],
+                        help='Scenario to run (use new t60-sweep naming)')
     args = parser.parse_args()
     
     results_dir = os.path.join(os.path.dirname(__file__), '..', 'results')
     os.makedirs(results_dir, exist_ok=True)
     
     if args.scenario == 'all':
-        # scenarios = ['fig2-3-4', 'fig5', 'fig6', 'table']
-        scenarios = ['fig2-3-4', 'fig6', 'table']
+        # Run all main scenarios (excluding riemannian variant)
+        scenarios = ['t60-sweep_clean', 'dual-interference_moving', 'snr-sir-sweep_single-interference']
     else:
         scenarios = [args.scenario]
     

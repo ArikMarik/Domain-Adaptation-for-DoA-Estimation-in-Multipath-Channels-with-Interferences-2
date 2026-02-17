@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import os
+import pickle
 
 def plot_beta_sweep(beta_vec, errors_dict, method_name, snr_ind, sir_ind, output_dir):
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -27,8 +28,7 @@ def plot_beta_sweep(beta_vec, errors_dict, method_name, snr_ind, sir_ind, output
     ax.set_box_aspect(None)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'Fig4_{method_name}_DoABeta.jpg'), dpi=150)
-    plt.savefig(os.path.join(output_dir, f'Fig4_{method_name}_DoABeta.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, f'T60Sweep_DoAError_{method_name}.jpg'), dpi=200, quality=95)
     plt.close()
 
 def plot_polar_spectrum(theta_vec, spectrum_adapted, spectrum_standard, theta_true, 
@@ -62,8 +62,7 @@ def plot_polar_spectrum(theta_vec, spectrum_adapted, spectrum_standard, theta_tr
     ax.tick_params(labelsize=16)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=150)
-    plt.savefig(os.path.join(output_dir, f'{filename}.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200, quality=95)
     plt.close()
 
 def plot_polar_spectrum_components(theta_vec, spectrum_e, spectrum_sigma_tr, spectrum_sigma_art,
@@ -89,8 +88,7 @@ def plot_polar_spectrum_components(theta_vec, spectrum_e, spectrum_sigma_tr, spe
     ax.tick_params(labelsize=16)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=150)
-    plt.savefig(os.path.join(output_dir, f'{filename}.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200, quality=95)
     plt.close()
 
 def plot_boxplots(data, labels, title, output_dir, filename, n_subplots=3):
@@ -134,6 +132,114 @@ def plot_boxplots(data, labels, title, output_dir, filename, n_subplots=3):
         ax.set_ylim([y_min, y_max])
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=150)
-    plt.savefig(os.path.join(output_dir, f'{filename}.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, f'{filename}.jpg'), dpi=200, quality=95)
     plt.close()
+
+
+def plot_arithmetic_vs_riemannian_comparison(results_arith_file, results_riem_file, output_dir):
+    """
+    Compare arithmetic vs Riemannian mean methods.
+    
+    Creates side-by-side comparison plots for DS, MVDR, and MUSIC methods
+    showing performance with and without domain adaptation for both averaging methods.
+    
+    Parameters
+    ----------
+    results_arith_file : str
+        Path to pickle file with arithmetic mean results
+    results_riem_file : str
+        Path to pickle file with Riemannian mean results
+    output_dir : str
+        Directory to save comparison plots
+    """
+    # Load results
+    with open(results_arith_file, 'rb') as f:
+        results_arith = pickle.load(f)
+    with open(results_riem_file, 'rb') as f:
+        results_riem = pickle.load(f)
+    
+    beta_vec = results_arith['beta_vec']
+    
+    # Define colors
+    blue_col = [0, 0.4470, 0.7410]
+    red_col = [0.8500, 0.3250, 0.0980]
+    orange_col = [0.9290, 0.6940, 0.1250]
+    purple_col = [0.4940, 0.1840, 0.5560]
+    
+    methods = ['DS', 'MVDR', 'MUSIC']
+    method_keys = [
+        ('theta_est_ts_pt_err', 'theta_est_ts_err'),
+        ('theta_est_mvdr_ts_pt_err', 'theta_est_mvdr_ts_err'),
+        ('theta_est_music_ts_pt_err', 'theta_est_music_ts_err')
+    ]
+    
+    for method_name, (adapted_key, standard_key) in zip(methods, method_keys):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Extract errors for SNR=0, SIR=0 (first indices)
+        arith_adapted = np.median(results_arith[adapted_key][:, 0, 0, :], axis=0)
+        arith_standard = np.median(results_arith[standard_key][:, 0, 0, :], axis=0)
+        riem_adapted = np.median(results_riem[adapted_key][:, 0, 0, :], axis=0)
+        riem_standard = np.median(results_riem[standard_key][:, 0, 0, :], axis=0)
+        
+        # Plot all four curves
+        ax.plot(beta_vec, arith_adapted, 'o-', color=blue_col, linewidth=2.5, 
+                markersize=8, markerfacecolor=blue_col, label=f'{method_name}+DA (Arithmetic)')
+        ax.plot(beta_vec, arith_standard, 's--', color=red_col, linewidth=2.5,
+                markersize=8, markerfacecolor=red_col, label=f'{method_name} (Arithmetic)')
+        ax.plot(beta_vec, riem_adapted, '^-', color=orange_col, linewidth=2.5,
+                markersize=8, markerfacecolor=orange_col, label=f'{method_name}+DA (Riemannian)')
+        ax.plot(beta_vec, riem_standard, 'd--', color=purple_col, linewidth=2.5,
+                markersize=8, markerfacecolor=purple_col, label=f'{method_name} (Riemannian)')
+        
+        # Calculate improvement percentages
+        arith_improvement = (arith_standard[-1] - arith_adapted[-1]) / arith_standard[-1] * 100
+        riem_improvement = (riem_standard[-1] - riem_adapted[-1]) / riem_standard[-1] * 100
+        
+        ax.set_xlabel(r'$\beta$ [sec]', fontsize=14)
+        ax.set_ylabel('Median DoA Error [deg]', fontsize=14)
+        ax.set_title(f'{method_name} Beamformer: Arithmetic vs Riemannian Mean\n' + 
+                    f'DA Improvement: Arith={arith_improvement:.1f}%, Riem={riem_improvement:.1f}%',
+                    fontsize=14)
+        ax.legend(loc='best', fontsize=11)
+        ax.grid(True, alpha=0.3)
+        ax.tick_params(labelsize=12)
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f'Comparison_ArithVsRiem_{method_name}.jpg'), dpi=200, quality=95)
+        plt.close()
+        
+        print(f"Saved: Comparison_ArithVsRiem_{method_name}.jpg")
+    
+    # Create summary comparison plot
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    
+    for idx, (method_name, (adapted_key, standard_key)) in enumerate(zip(methods, method_keys)):
+        ax = axes[idx]
+        
+        arith_adapted = np.median(results_arith[adapted_key][:, 0, 0, :], axis=0)
+        riem_adapted = np.median(results_riem[adapted_key][:, 0, 0, :], axis=0)
+        
+        ax.plot(beta_vec, arith_adapted, 'o-', color=blue_col, linewidth=2.5, 
+                markersize=8, label='Arithmetic Mean')
+        ax.plot(beta_vec, riem_adapted, '^-', color=orange_col, linewidth=2.5,
+                markersize=8, label='Riemannian Mean')
+        
+        improvement = (arith_adapted[-1] - riem_adapted[-1]) / arith_adapted[-1] * 100
+        sign = '+' if improvement > 0 else ''
+        
+        ax.set_xlabel(r'$\beta$ [sec]', fontsize=12)
+        ax.set_ylabel('Median DoA Error [deg]', fontsize=12)
+        ax.set_title(f'{method_name}+DA\nRiem vs Arith: {sign}{improvement:.1f}%', fontsize=13)
+        ax.legend(loc='best', fontsize=10)
+        ax.grid(True, alpha=0.3)
+        ax.tick_params(labelsize=11)
+    
+    plt.suptitle('Domain Adaptation Methods: Arithmetic vs Riemannian Mean Comparison', 
+                 fontsize=15, y=1.02)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'Comparison_ArithVsRiem_Summary.jpg'), dpi=200, quality=95)
+    plt.close()
+    
+    print(f"Saved: Comparison_ArithVsRiem_Summary.jpg")
+    print("\nComparison plots generated successfully!")

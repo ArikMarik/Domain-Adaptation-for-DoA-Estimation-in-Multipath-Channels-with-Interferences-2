@@ -218,9 +218,9 @@ def run_acoustic_doa(config):
                         theta_est_music_vec_ts_pt[source_ind] = doa_from_spectrum(theta_vec, music_spectrum_ts_pt)
                         
                         should_plot_spectra = (
-                            (config.get('plot_figs_2_3_4', False) and abs(beta - 0.4) < 0.01 and source_ind == 13) or
-                            (config.get('plot_figs_5', False) and sir_ind == 0 and snr_ind == 0 and b == 0 and source_ind == 50) or
-                            (config.get('plot_figs_6', False) and sir_ind == 0 and snr_ind == 0 and b == 0 and source_ind == 50)
+                            (config.get('plot_t60_sweep_clean', False) and abs(beta - 0.4) < 0.01 and source_ind == 13) or
+                            (config.get('plot_single_interference_fixed', False) and sir_ind == 0 and snr_ind == 0 and b == 0 and source_ind == 50) or
+                            (config.get('plot_dual_interference_moving', False) and sir_ind == 0 and snr_ind == 0 and b == 0 and source_ind == 50)
                         )
                         
                         if should_plot_spectra:
@@ -230,7 +230,15 @@ def run_acoustic_doa(config):
                             
                             from visualization.plotting import plot_polar_spectrum, plot_polar_spectrum_components
                             
-                            fig_prefix = 'Fig3' if config.get('plot_figs_2_3_4', False) else ('Fig5' if config.get('plot_figs_5', False) else 'Fig6')
+                            # Determine figure prefix based on scenario
+                            if config.get('plot_t60_sweep_clean', False):
+                                fig_prefix = 'T60Sweep_Spectra'
+                            elif config.get('plot_single_interference_fixed', False):
+                                fig_prefix = 'SingleInterf_Spectra'
+                            elif config.get('plot_dual_interference_moving', False):
+                                fig_prefix = 'DualInterf_Spectra'
+                            else:
+                                fig_prefix = 'Spectra'
                             
                             plot_polar_spectrum(
                                 theta_vec, ml_spectrum_ts_pt, ml_spectrum_ts,
@@ -253,7 +261,7 @@ def run_acoustic_doa(config):
                                 'MUSIC', results_dir, f'{fig_prefix}_MUSIC_Spectrum'
                             )
                             
-                            if config.get('plot_figs_2_3_4', False):
+                            if config.get('plot_t60_sweep_clean', False):
                                 sigma_tr_half = sqrtm(corr_tr_mean)
                                 sigma_art_half = sqrtm(cor_art_mean)
                                 

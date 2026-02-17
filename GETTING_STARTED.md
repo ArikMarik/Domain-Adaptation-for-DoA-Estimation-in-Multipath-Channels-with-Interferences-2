@@ -1,3 +1,4 @@
+git 
 # Getting Started - Python Implementation
 
 ## ✅ Implementation Complete! (Bugs Fixed 2026-02-16)
