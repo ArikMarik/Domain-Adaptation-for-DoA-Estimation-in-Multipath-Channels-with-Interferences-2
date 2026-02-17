@@ -1,0 +1,8 @@
+# This directory stores audio sample files for testing
+# Audio files are excluded from git via .gitignore due to size
+# 
+# Required audio files (not in repo):
+# - speech_male.wav
+# - speech_female.wav
+# - music_classical.wav
+# - music_jazz.wav

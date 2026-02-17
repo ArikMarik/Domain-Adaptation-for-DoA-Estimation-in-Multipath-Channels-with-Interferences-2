@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.Python
+*.pyc
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Results and Artifacts
+python_implementation/results/*.jpg
+python_implementation/results/*.jpeg
+python_implementation/results/*.png
+python_implementation/results/*.pkl
+python_implementation/results/*.csv
+python_implementation/results/*.npy
+
+# Audio files (large binaries)
+*.wav
+*.mp3
+*.flac
+*.ogg
+data/audio/*.wav
+data/audio/*.mp3
+
+# Logs
+*.log
+nohup.out
+nohup*.out
+*.out
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# MATLAB
+*.asv
+*.m~
+
+# Allow .gitkeep files to maintain directory structure
+!**/.gitkeep
+
+# Allow specific documentation/reference files in results if needed
+!python_implementation/results/README.md
+
+# Allow example/small test files if explicitly added
+!python_implementation/results/example_*.jpg

@@ -1,0 +1,2 @@
+# This directory stores generated results (plots, pickle files, etc.)
+# These files are excluded from git via .gitignore

@@ -1,0 +1,3 @@
+Math Accuracy: "Prioritize vectorized NumPy operations over loops for covariance matrix calculations ($\Sigma = \frac{1}{T} XX^H$)."
+Documentation: "Use LaTeX in docstrings for formal math definitions (e.g., $E = \Sigma_S^{1/2} \Sigma_A^{-1/2}$)."
+Code Style: "Follow PEP 8 and use type hints for all signal processing functions."
